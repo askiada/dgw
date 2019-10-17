@@ -10,9 +10,20 @@ var tmplFuncMap = template.FuncMap{
 	"createInsertParams":         createInsertParams,
 	"createInsertScan":           createInsertScan,
 	"createSelectByPkSQL":        createSelectByPkSQL,
+	"createSelectSQL":            createSelectSQL,
 	"createSelectByPkFuncParams": createSelectByPkFuncParams,
 	"createSelectByPkSQLParams":  createSelectByPkSQLParams,
 	"createSelectByPkScan":       createSelectByPkScan,
+}
+
+func createSelectSQL(st *Struct) string {
+	var sql string
+	var colNames []string
+	for _, c := range st.Table.Columns {
+		colNames = append(colNames, c.Name)
+	}
+	sql = "SELECT " + flatten(colNames, ", ") + " FROM " + st.Table.Name
+	return sql
 }
 
 func createSelectByPkSQL(st *Struct) string {
@@ -117,7 +128,7 @@ func createInsertSQL(st *Struct) string {
 	var sql string
 	sql = "INSERT INTO " + st.Table.Name + " ("
 
-	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk{
+	if len(st.Table.Columns) == 1 && st.Table.Columns[0].IsPrimaryKey && st.Table.AutoGenPk {
 		sql = sql + st.Table.Columns[0].Name + ") VALUES (DEFAULT)"
 	} else {
 		var colNames []string
