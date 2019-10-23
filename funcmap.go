@@ -20,9 +20,9 @@ func createSelectSQL(st *Struct) string {
 	var sql string
 	var colNames []string
 	for _, c := range st.Table.Columns {
-		colNames = append(colNames, c.Name)
+		colNames = append(colNames, `"`+c.Name+`"`)
 	}
-	sql = "SELECT " + flatten(colNames, ", ") + " FROM " + st.Table.Name
+	sql = "SELECT " + flatten(colNames, `, `) + " FROM " + st.Table.Name
 	return sql
 }
 
